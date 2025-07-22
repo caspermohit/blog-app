@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\FileUploadController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,6 +33,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/posts/{post}', [PostController::class, 'update'])->name('posts.update');
     Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
     Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
+    Route::get('/uploads', [FileUploadController::class, 'show'])->name('uploads.show');    
+    Route::post('/uploads', [FileUploadController::class, 'store'])->name('uploads.store');
 });
 
 require __DIR__.'/auth.php';

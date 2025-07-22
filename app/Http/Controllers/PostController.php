@@ -43,14 +43,21 @@ class PostController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string|max:10000',
+            'file' => 'required|file|mimes:jpg,jpeg,png,pdf,docx|max:2048',
         ]);
         Post::create([
         'title'   => $request->title,
         'content' => $request->content,
+        'file' => $request->file,
         'user_id' => Auth::id(), 
+
     ]);
         return redirect()->route('posts.index');
         
+        $file = $request->file('file');
+        $fileName = time().$file->getClientOriginalName();
+        $file->storeAs('ulploads', $fileName, 'public');
+        return redirect()->back()->with('status', 'file uploaded successfully');
     }
 
     /**
