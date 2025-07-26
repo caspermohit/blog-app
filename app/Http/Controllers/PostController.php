@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use App\Mail\CreatePostEmail;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\View\View;
+
 
 class PostController extends Controller
 {
@@ -43,21 +47,20 @@ class PostController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string|max:10000',
-            'file' => 'required|file|mimes:jpg,jpeg,png,pdf,docx|max:2048',
+            'file' => 'required|file|mimes:jpg,jpeg,png|max:2048',
+
         ]);
+        $filepath = $request->file('file')->store('uploads' , 'public');
         Post::create([
         'title'   => $request->title,
         'content' => $request->content,
-        'file' => $request->file,
+        'file' => $filepath,
         'user_id' => Auth::id(), 
-
     ]);
+        Mail::to(Auth::user()->email)->send(new CreatePostEmail($post));    
         return redirect()->route('posts.index');
         
-        $file = $request->file('file');
-        $fileName = time().$file->getClientOriginalName();
-        $file->storeAs('ulploads', $fileName, 'public');
-        return redirect()->back()->with('status', 'file uploaded successfully');
+        
     }
 
     /**
