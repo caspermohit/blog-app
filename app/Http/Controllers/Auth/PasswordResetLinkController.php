@@ -15,7 +15,13 @@ class PasswordResetLinkController extends Controller
      */
     public function create(): View
     {
-        return view('auth.forgot-password');
+        try{
+            return view('auth.forgot-password');
+        }
+        catch(\Throwable $th)
+        {
+            return response()->view('errors.404', ['message' => 'Password reset link not found'], 404);
+        }
     }
 
     /**
@@ -25,6 +31,7 @@ class PasswordResetLinkController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        try{
         $request->validate([
             'email' => ['required', 'email'],
         ]);
@@ -40,5 +47,10 @@ class PasswordResetLinkController extends Controller
                     ? back()->with('status', __($status))
                     : back()->withInput($request->only('email'))
                             ->withErrors(['email' => __($status)]);
+        }
+        catch(\Throwable $th)
+        {
+            return response()->view('errors.404', ['message' => 'Password reset link not sent'], 404);
+        }
     }
 }

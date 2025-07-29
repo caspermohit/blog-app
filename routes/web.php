@@ -4,6 +4,8 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\FileUploadController;
+use App\Http\Controllers\ActivityController;
+use App\Models\ActivityLog;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,6 +37,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
     Route::get('/uploads', [FileUploadController::class, 'show'])->name('uploads.show');    
     Route::post('/uploads', [FileUploadController::class, 'store'])->name('uploads.store');
+    Route::get('/activity', [ActivityController::class, 'index'])->name('activity.index')->middleware('activity.access');  
+    Route::get('/activity/{activity}', [ActivityController::class, 'show'])->name('activity.show')->middleware('activity.access');
+    
 });
 
 require __DIR__.'/auth.php';

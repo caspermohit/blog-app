@@ -19,7 +19,13 @@ class NewPasswordController extends Controller
      */
     public function create(Request $request): View
     {
-        return view('auth.reset-password', ['request' => $request]);
+        try{
+            return view('auth.reset-password', ['request' => $request]);
+        }
+        catch(\Throwable $th)
+        {
+            return response()->view('errors.404', ['message' => 'Password reset view not found'], 404);
+        }
     }
 
     /**
@@ -29,6 +35,7 @@ class NewPasswordController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        try{
         $request->validate([
             'token' => ['required'],
             'email' => ['required', 'email'],
@@ -57,5 +64,10 @@ class NewPasswordController extends Controller
                     ? redirect()->route('login')->with('status', __($status))
                     : back()->withInput($request->only('email'))
                             ->withErrors(['email' => __($status)]);
+        }
+        catch(\Throwable $th)
+        {
+            return response()->view('errors.404', ['message' => 'Password reset failed'], 404);
+        }
     }
 }

@@ -10,7 +10,10 @@ use App\Events\UserActivityEvent;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;  
 use App\Listeners\LogUserActivity;
+use App\Events\PostCreated;
+use App\Listeners\LogPostCreated; 
 
+    
 class EventServiceProvider extends ServiceProvider
 {
     /**
@@ -21,6 +24,9 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         UserActivityEvent::class => [
             LogUserActivity::class,
+        ],
+        PostCreated::class => [
+            LogPostCreated::class,
         ],
     ];
 
@@ -42,6 +48,9 @@ class EventServiceProvider extends ServiceProvider
          Event::listen(Registered::class, function ($event) {
             event(new UserActivityEvent($event->user, 'registered'));
         });
+        
+        
+        
     }
 
     /**

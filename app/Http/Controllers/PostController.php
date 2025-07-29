@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Mail\CreatePostEmail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
-
+use App\Events\PostCreated; 
 
 class PostController extends Controller
 {
@@ -17,11 +17,19 @@ class PostController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
+
+    
     {
+    try{
         $posts = Post::all();  
         return view('posts.index', compact('posts'));
 
         
+    }
+    catch(\Throwable $th)
+    {
+            return response()->view('errors.404', ['message' => 'Posts not found'], 404);
+    }
     }
 
     /**
@@ -31,7 +39,15 @@ class PostController extends Controller
      */
     public function create()
     {
-        return view('posts.create');    
+        try{
+            return view('posts.create');  
+            
+            
+        }
+        catch(\Throwable $th)
+        {
+                return response()->view('errors.404', ['message' => 'Post not created'], 404);
+        }
         
     }
 
@@ -43,6 +59,7 @@ class PostController extends Controller
      */
     public function store(Request $request, Post $post,)
     {
+        try{
         //$this->authorize('create', Post::class);
         $request->validate([
             'title' => 'required|string|max:255',
@@ -51,17 +68,27 @@ class PostController extends Controller
 
         ]);
         $filepath = $request->file('file')->store('uploads' , 'public');
-        Post::create([
-        'title'   => $request->title,
-        'content' => $request->content,
-        'file' => $filepath,
-        'user_id' => Auth::id(), 
-    ]);
+        $post = Post::create([
+            'title'   => $request->title,
+            'content' => $request->content,
+            'file' => $filepath,
+            'user_id' => Auth::id(), 
+        ]);
+        
+        // Fire the PostCreated event
+        event(new PostCreated($post, Auth::user()));
+        
         Mail::to(Auth::user()->email)->send(new CreatePostEmail($post));    
         return redirect()->route('posts.index');
-        
-        
+        }
+        catch(\Throwable $th)
+        {
+            return response()->view('errors.404', ['message' => 'Post not created'], 404);
+        }
     }
+
+        
+    
 
     /**
      * Display the specified resource.
@@ -88,7 +115,7 @@ class PostController extends Controller
     }
     catch(\Throwable $th)
     {
-       return "view not found";
+        return response()->view('errors.404', ['message' => 'Post not found'], 404);
     }
         
     }
@@ -102,9 +129,15 @@ class PostController extends Controller
      */
     public function update(Request $request ,Post $post)
     {
-        $this->authorize('update', $post); // Check if allowed
-        $post->update($request->only('title', 'content'));
-          return redirect()->route('posts.index');
+        try{
+            $this->authorize('update', $post); // Check if allowed
+            $post->update($request->only('title', 'content'));
+            return redirect()->route('posts.index');
+        }
+        catch(\Throwable $th)
+        {
+            return response()->view('errors.404', ['message' => 'Post not updated'], 404);
+        }
     }
 
     /**
@@ -115,8 +148,14 @@ class PostController extends Controller
      */
     public function destroy( Post $post)
     {
-        $this->authorize('delete', $post); // Check if allowed
-        $post->delete();
-        return redirect()->route('posts.index');
+        try{
+            $this->authorize('delete', $post); // Check if allowed
+            $post->delete();
+            return redirect()->route('posts.index');
+        }
+        catch(\Throwable $th)
+        {
+            return response()->view('errors.404', ['message' => 'You are not authorized to delete this post'], 404);
+        }
     }
 }

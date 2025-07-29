@@ -16,9 +16,15 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
-        return view('profile.edit', [
-            'user' => $request->user(),
-        ]);
+        try{
+            return view('profile.edit', [
+                'user' => $request->user(),
+            ]);
+        }
+        catch(\Throwable $th)
+        {
+            return response()->view('errors.404', ['message' => 'Profile not found'], 404);
+        }
     }
 
     /**
@@ -26,7 +32,9 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        try{
+            $request->user()->fill($request->validated());
+            
 
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;
@@ -35,6 +43,11 @@ class ProfileController extends Controller
         $request->user()->save();
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        }
+        catch(\Throwable $th)
+        {
+            return response()->view('errors.404', ['message' => 'Profile not updated'], 404);
+        }
     }
 
     /**
@@ -42,7 +55,7 @@ class ProfileController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
-        
+        try{
         $request->validateWithBag('userDeletion', [
             'password' => ['required', 'current-password'],
         ]);
@@ -57,5 +70,10 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
+        }
+        catch(\Throwable $th)
+        {
+            return response()->view('errors.404', ['message' => 'Profile not deleted'], 404);
+        }
     }
 }

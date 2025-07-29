@@ -15,6 +15,7 @@ class PasswordController extends Controller
      */
     public function update(Request $request): RedirectResponse
     {
+        try{
         $validated = $request->validateWithBag('updatePassword', [
             'current_password' => ['required', 'current_password'],
             'password' => ['required', Password::defaults(), 'confirmed'],
@@ -25,5 +26,10 @@ class PasswordController extends Controller
         ]);
 
         return back()->with('status', 'password-updated');
+        }
+        catch(\Throwable $th)
+        {
+            return response()->view('errors.404', ['message' => 'Password not updated'], 404);
+        }
     }
 }

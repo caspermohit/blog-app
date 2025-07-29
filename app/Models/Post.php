@@ -16,8 +16,13 @@ class Post extends Model
              'file',
 ];
     public function user(){
-                
+        try{
         return $this->belongsTo(User::class, 'user_id');
+        }
+        catch(\Throwable $th)
+        {
+            return response()->view('errors.404', ['message' => 'Post not found'], 404);
+        }
 }
 }
     

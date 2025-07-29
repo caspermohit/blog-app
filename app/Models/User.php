@@ -15,9 +15,33 @@ class User extends Authenticatable
 
 
     public function posts()
-{
-return $this->hasMany(Post::class);
-}
+    {
+        return $this->hasMany(Post::class);
+    }
+
+    /**
+     * Check if user is an admin
+     */
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+    /**
+     * Check if user is a viewer
+     */
+    public function isViewer()
+    {
+        return $this->role === 'viewer';
+    }
+
+    /**
+     * Get user's activity logs
+     */
+    public function activityLogs()
+    {
+        return $this->hasMany(ActivityLog::class);
+    }
     /**
      * 
      * 
@@ -28,7 +52,9 @@ return $this->hasMany(Post::class);
     protected $fillable = [
         'name',
         'email',
+        'date_of_birth',
         'password',
+        'role',
     ];
 
     /**
@@ -49,5 +75,6 @@ return $this->hasMany(Post::class);
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'date_of_birth' => 'date',
     ];
 }

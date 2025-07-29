@@ -23,7 +23,13 @@ class RegisteredUserController extends Controller
      */
     public function create(): View
     {
-        return view('auth.register');
+        try{
+            return view('auth.register');
+        }
+        catch(\Throwable $th)
+        {
+            return response()->view('errors.404', ['message' => 'Registration failed'], 404);
+        }
     }
 
     /**
@@ -33,15 +39,18 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        try{
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
+            'date_of_birth' => ['required', 'date:Y-m-d', 'before:today'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'date_of_birth' => $request->date_of_birth,     
             'password' => Hash::make($request->password),
         ]);
 
@@ -52,5 +61,10 @@ class RegisteredUserController extends Controller
         Auth::login($user);
 
         return redirect(RouteServiceProvider::HOME);
+        }
+        catch(\Throwable $th)
+        {
+            return response()->view('errors.404', ['message' => 'Registration failed'], 404);
+        }
     }
 }

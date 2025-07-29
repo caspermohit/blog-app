@@ -16,7 +16,7 @@
                                 Title
                             </label>
                             <div class="mt-1">
-                                <input type="text" name="title" id="title" class="block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-md text-red-900 dark:text-gray-300 border-gray-300 rounded-md">                 
+                                <input type="text" name="title" id="title" class="block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-md text-red-900 dark:text-black-900 border-black-300 rounded-md">                 
                             </div>
                         </div>
 
@@ -26,7 +26,7 @@
                                 Content
                             </label>
                             <div class="mt-1">
-                                <textarea name="content" id="content" rows="3" class="block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-md text-red-900 dark:text-red-700 border-gray-300 rounded-md"></textarea>    
+                                <textarea name="content" id="content" rows="3" class="block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-md text-red-900 dark:text-black-700 border-black-300 rounded-md"></textarea>    
                             </div>
                         </div>
                         <div class="mb-4">
@@ -36,7 +36,7 @@
                             @csrf
                             <div class="mt-1">
                                 
-                                <input type="file" name="file" id="file" class="block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-md text-red-700 dark:text-red-300 border-gray-300 rounded-md">
+                                <input type="file" name="file" id="file" class="block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-md text-red-700 dark:text-black-700 border-black-300 rounded-md">
                             </div>
                         </div>
                         <div class="flex justify-end">
