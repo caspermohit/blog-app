@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\Session;
+
 
 class ProfileController extends Controller
 {
@@ -20,6 +23,7 @@ class ProfileController extends Controller
             return view('profile.edit', [
                 'user' => $request->user(),
             ]);
+            
         }
         catch(\Throwable $th)
         {

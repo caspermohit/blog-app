@@ -49,12 +49,22 @@
         <!--Date of Birth-->
         <div>
             <x-input-label for="date_of_birth" :value="__('Date of Birth')" />
-            <x-text-input id="date_of_birth" name="date_of_birth" type="date" class="mt-1 block w-full" :value="old('date_of_birth', $user->date_of_birth ? $user->date_of_birth->format('Y-m-d') : '')" required autocomplete="date_of_birth" />
+            <x-text-input id="date_of_birth" name="date_of_birth" type="date" class="mt-1 block w-full" :value="old('date_of_birth', $user->date_of_birth)" required autocomplete="date_of_birth" />
             <x-input-error class="mt-2" :messages="$errors->get('date_of_birth')" />
         </div>
 
         <div class="flex items-center gap-4">
             <x-primary-button>{{ __('Save') }}</x-primary-button>
+
+            <!-- @if (session('success'))
+                <p
+                    x-data="{ show: true }"
+                    x-show="show"
+                    x-transition
+                    x-init="setTimeout(() => show = false, 3000)"
+                    class="text-sm text-green-600 dark:text-green-400 font-medium"
+                >{{ session('success') }}</p>
+            @endif -->
 
             @if (session('status') === 'profile-updated')
                 <p
@@ -63,7 +73,7 @@
                     x-transition
                     x-init="setTimeout(() => show = false, 2000)"
                     class="text-sm text-gray-600 dark:text-gray-400"
-                >{{ __('Saved.') }}</p>
+                >{{ __('Profile updated successfully.') }}</p>
             @endif
         </div>
     </form>
