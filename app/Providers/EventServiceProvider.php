@@ -12,6 +12,9 @@ use Illuminate\Auth\Events\Logout;
 use App\Listeners\LogUserActivity;
 use App\Events\PostCreated;
 use App\Listeners\LogPostCreated; 
+use App\Jobs\SendLoginEmail;
+use App\Jobs\SendLogoutEmail;
+
 
     
 class EventServiceProvider extends ServiceProvider
@@ -41,9 +44,11 @@ class EventServiceProvider extends ServiceProvider
         
         Event::listen(Login::class, function ($event) {
             event(new UserActivityEvent($event->user, 'logged in'));
+            SendLoginEmail::dispatch($event->user);
         });
         Event::listen(Logout::class, function ($event) {
             event(new UserActivityEvent($event->user, 'logged out'));
+            SendLogoutEmail::dispatch($event->user);
         });
          Event::listen(Registered::class, function ($event) {
             event(new UserActivityEvent($event->user, 'registered'));
