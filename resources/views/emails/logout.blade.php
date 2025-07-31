@@ -18,7 +18,7 @@
         <div class="content">
             <p>Hello,</p>
             <p>User <strong>{{ $user->name }}</strong> has logged out of the system.</p>
-            <p>Logout time: {{ now()->format('Y-m-d H:i:s') }}</p>
+            <p>Logout time: {{ date('Y-m-d H:i:s') }}</p>
         </div>
         <div class="footer">
             <p>This is an automated notification from your blog application.</p>

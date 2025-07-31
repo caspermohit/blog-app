@@ -6,6 +6,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\FileUploadController;
 use App\Http\Controllers\ActivityController;
 use App\Models\ActivityLog;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,7 +21,22 @@ use App\Models\ActivityLog;
 
 Route::get('/', function () {
     return view('welcome');
+
 });
+
+Route::get('/email/verify', function () {
+    return view('auth.verify-email');
+})->middleware('auth')->name('verification.notice');
+
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();    //this is to verify the email after the user clicks the link in the email
+    return redirect('/dashboard'); //this is to redirect the user to the dashboard after the email is verified
+})->middleware(['auth', 'signed'])->name('verification.verify');
+
+Route::post('/email/verification-notification', function (Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+    return back()->with('message', 'Verification link sent!');
+})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
